@@ -1,0 +1,7 @@
+<webscript>
+    <shortname>LibreOffice Online Get File Info</shortname>
+    <description>Get WOPI info for the given fileId</description>
+    <url>/libreoffice-online/wopi/files/{fileId}</url>
+    <authentication>none</authentication>
+    <format default="json"></format>
+</webscript>

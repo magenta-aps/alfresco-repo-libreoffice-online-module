@@ -1,0 +1,8 @@
+<webscript>
+    <shortname>LibreOffice Online Get Token</shortname>
+    <description>Get a token and the WOPI src URL for the given
+        nodeRef</description>
+    <url>/libreoffice-online/wopi/token?nodeRef={nodeRef}&amp;action={action}</url>
+    <authentication>user</authentication>
+    <format default="json"></format>
+</webscript>
