@@ -40,6 +40,9 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
         NodeRef nodeRef = loolService.checkAccessToken(req);
 
         String wopiOverrideHeader = req.getHeader("X-WOPI-Override");
+        if (wopiOverrideHeader == null) {
+            wopiOverrideHeader = req.getHeader("X-WOPIOverride");
+        }
         if (wopiOverrideHeader == null || !wopiOverrideHeader.equals("PUT")) {
             throw new WebScriptException("X-WOPI-Override header must be " +
                     "present " +

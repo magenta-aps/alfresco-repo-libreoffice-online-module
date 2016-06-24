@@ -86,7 +86,11 @@ public class LOOLServiceImpl implements LOOLService {
         if (tokenInfo == null) {
             tokenInfo = new WOPIAccessTokenInfo(generateAccessToken(),
                     now, newExpiresAt, fileId, userName);
-            fileIdAccessTokenMap.putIfAbsent(fileId, new HashMap<String, WOPIAccessTokenInfo>());
+            Map<String, WOPIAccessTokenInfo> v = fileIdAccessTokenMap.get
+                    (fileId);
+            if (v == null) {
+                v = fileIdAccessTokenMap.put(fileId, new HashMap<String, WOPIAccessTokenInfo>());
+            }
             fileIdAccessTokenMap.get(fileId).put(userName, tokenInfo);
         }
         return tokenInfo;
