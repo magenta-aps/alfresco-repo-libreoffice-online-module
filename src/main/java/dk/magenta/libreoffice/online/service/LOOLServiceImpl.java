@@ -237,6 +237,13 @@ public class LOOLServiceImpl implements LOOLService {
         }
 
         private InputStream fetchDiscoveryXML() throws IOException {
+//            URL discoveryURL = new URL(wopiBaseUrl.getProtocol(),
+//                    wopiBaseUrl.getHost(), wopiBaseUrl.getPort(), "/hosting/discovery");
+//            HttpURLConnection connection = (HttpURLConnection) discoveryURL.openConnection();
+//            return connection.getInputStream();
+
+            // TODO: Remove me! Use the real fetching code (commented out
+            // above)
             String xml = "\n" +
                     "<wopi-discovery>\n" +
                     "    <net-zone name=\"external-http\">\n" +
@@ -474,10 +481,6 @@ public class LOOLServiceImpl implements LOOLService {
                     "</wopi-discovery>";
             return new ByteArrayInputStream(xml.getBytes(StandardCharsets
                     .UTF_8));
-//            URL discoveryURL = new URL(wopiBaseUrl.getProtocol(),
-//                    wopiBaseUrl.getHost(), wopiBaseUrl.getPort(), "/hosting/discovery");
-//            HttpURLConnection connection = (HttpURLConnection) discoveryURL.openConnection();
-//            return connection.getInputStream();
         }
     }
 
