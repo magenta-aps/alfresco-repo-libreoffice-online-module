@@ -20,9 +20,11 @@
 
     <!-- A simple class that is initialized by Spring -->
     <bean id="LOOLService"
-          class="dk.magenta.libreoffice.online.LOOLService" init-method="init">
-        <property name="wopiBaseURL" value="https://alfresco-test.ballerup.dk:9980"/>
+          class="dk.magenta.libreoffice.online.service.LOOLServiceImpl" init-method="init">
+        <property name="wopiBaseURL"
+                  value="https://alfresco-test.ballerup.dk:9980"/>
         <property name="nodeService" ref="NodeService"/>
+        <property name="sysAdminParams" ref="sysAdminParams"/>
     </bean>
 
 </beans>

@@ -16,6 +16,8 @@ limitations under the License.
 */
 package dk.magenta.libreoffice.online;
 
+import dk.magenta.libreoffice.online.service.LOOLService;
+import dk.magenta.libreoffice.online.service.WOPIAccessTokenInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.springframework.extensions.webscripts.*;
 
@@ -23,25 +25,32 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LibreOfficeOnlineGetFileInfoWebScript extends DeclarativeWebScript {
+public class LOOLGetTokenWebScript extends DeclarativeWebScript {
     private LOOLService loolService;
 
     protected Map<String, Object> executeImpl(
             WebScriptRequest req, Status status, Cache cache) {
         Map<String, Object> model = new HashMap<>();
-        String fileId = req.getServiceMatch().getTemplateVars().get("fileId");
-        if (fileId == null) {
-            throw new WebScriptException("No 'fileId' parameter supplied");
+        String nodeRefStr = req.getParameter("nodeRef");
+        if (nodeRefStr == null) {
+            throw new WebScriptException("No 'nodeRef' parameter supplied");
         }
-        String accessToken = req.getParameter("access_token");
-
-        // Check access token
-        if (accessToken == null || !loolService.isValidAccessToken(fileId, accessToken)) {
-            status.setCode(Status.STATUS_FORBIDDEN, "Access token invalid");
+        NodeRef nodeRef = new NodeRef(nodeRefStr);
+        String action = req.getParameter("action");
+        if (action == null) {
+            throw new WebScriptException("No 'action' parameter supplied");
+        }
+        WOPIAccessTokenInfo tokenInfo = loolService.createAccessToken(loolService.getFileIdForNodeRef(nodeRef));
+        String wopiSrcUrl;
+        try {
+            wopiSrcUrl = loolService.getWopiSrcURL(nodeRef, action);
+        } catch (IOException e) {
+            status.setCode(Status.STATUS_INTERNAL_SERVER_ERROR, "Failed to " +
+                    "get wopiSrcURL");
             return model;
         }
-        model.put("BaseFileName", loolService.getBaseFileName(fileId));
-        model.put("Size", loolService.getSize(fileId));
+        model.put("access_token", tokenInfo.getAccessToken());
+        model.put("wopi_src_url", wopiSrcUrl);
         return model;
     }
 
