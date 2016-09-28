@@ -22,7 +22,7 @@
     <bean id="LOOLService"
           class="dk.magenta.libreoffice.online.service.LOOLServiceImpl" init-method="init">
         <property name="wopiBaseURL"
-                  value="https://alfresco-test.ballerup.dk:9980"/>
+                  value="https://lool.magenta.dk:9980"/>
         <property name="nodeService" ref="NodeService"/>
         <property name="sysAdminParams" ref="sysAdminParams"/>
     </bean>
