@@ -19,10 +19,11 @@
 <beans>
 
     <!-- A simple class that is initialized by Spring -->
+    <!--Note that the discovery url is added here for some flexibility-->
     <bean id="LOOLService"
           class="dk.magenta.libreoffice.online.service.LOOLServiceImpl" init-method="init">
-        <property name="wopiBaseURL"
-                  value="https://lool.magenta.dk:9980"/>
+        <property name="wopiBaseURL" value="${lool.wopi.url}"/>
+        <property name="wopiDiscoveryURL" value="${lool.wopi.url.discovery}"/>
         <property name="nodeService" ref="NodeService"/>
         <property name="sysAdminParams" ref="sysAdminParams"/>
     </bean>
