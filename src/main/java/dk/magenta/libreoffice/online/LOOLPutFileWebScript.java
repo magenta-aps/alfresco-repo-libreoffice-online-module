@@ -19,16 +19,16 @@ package dk.magenta.libreoffice.online;
 import dk.magenta.libreoffice.online.service.LOOLService;
 import dk.magenta.libreoffice.online.service.LOOLServiceImpl;
 import org.alfresco.model.ContentModel;
-import org.alfresco.service.cmr.repository.*;
-import org.apache.chemistry.opencmis.commons.impl.IOUtils;
+import org.alfresco.service.cmr.repository.ContentService;
+import org.alfresco.service.cmr.repository.ContentWriter;
+import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.repository.NodeService;
 import org.springframework.extensions.webscripts.AbstractWebScript;
 import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public class LOOLPutFileWebScript extends AbstractWebScript {
     private LOOLService loolService;
@@ -44,9 +44,7 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
             wopiOverrideHeader = req.getHeader("X-WOPIOverride");
         }
         if (wopiOverrideHeader == null || !wopiOverrideHeader.equals("PUT")) {
-            throw new WebScriptException("X-WOPI-Override header must be " +
-                    "present " +
-                    "and equal to 'PUT'");
+            throw new WebScriptException("X-WOPI-Override header must be present and equal to 'PUT'");
         }
 
         ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
