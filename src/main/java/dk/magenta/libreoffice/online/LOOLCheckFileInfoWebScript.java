@@ -54,8 +54,6 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
         Map<String, Object> model = new HashMap<>();
         try {
             NodeRef nodeRef = loolService.checkAccessToken(req);
-            String hashed = getSHAhash(nodeRef);
-            logger.warn("\n\n------- SHA Hash ---------\n ("+hashed+")\n\n");
             //TODO Some properties are hard coded for now but we should look into making them sysadmin configurable
             model.put("BaseFileName", getBaseFileName(nodeRef));
             model.put("DisableCopy", true);
@@ -72,7 +70,7 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
             model.put("Version",  getDocumentVersion(nodeRef));
         }
         catch(Exception ge){
-            throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Unable to provide a hash of the file");
+            throw new WebScriptException(Status.STATUS_BAD_REQUEST, "error returning file nodeRef\nReason:\n" + ge.getMessage());
         }
         return model;
     }

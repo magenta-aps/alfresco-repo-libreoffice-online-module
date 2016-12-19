@@ -35,11 +35,15 @@
 		<property name="contentService" ref="ContentService"/>
 	</bean>
 
-
 	<bean id="webscript.dk.magenta.wopi.file.post" class="dk.magenta.libreoffice.online.LOOLPutFileWebScript"
 		  parent="webscript">
 		<property name="loolService" ref="LOOLService"/>
 		<property name="nodeService" ref="NodeService"/>
 		<property name="contentService" ref="ContentService"/>
+	</bean>
+
+	<bean id="webscript.dk.magenta.wopi.lool-host.get" class="dk.magenta.libreoffice.online.LOOLServiceUrlInfoWebScript"
+		  parent="webscript">
+		<property name="loolServiceUrl" value="${lool.wopi.alfresco.host}"/>
 	</bean>
 </beans>
