@@ -201,10 +201,10 @@ public class LOOLServiceImpl implements LOOLService {
         //We should actually never throw an exception here unless of course.......
         if (wopiDiscoveryURL == null) {
             try {
+                wopiDiscoveryURL = new URL(wopiBaseURL.getProtocol() + wopiBaseURL.getHost() + wopiBaseURL.getPort() + "/discovery");
                 logger.warn("******* Warning *******\nThe wopiDiscoveryURL param wasn't found in " +
                         "alfresco-global.properties. \nWe will assume that the discovery.xml file is hosted on this" +
-                        "server and .");
-                wopiDiscoveryURL = new URL(wopiBaseURL.getProtocol() + wopiBaseURL.getHost() + wopiBaseURL.getPort() + "/discovery");
+                        "server and construct a url path based on this: "+ wopiDiscoveryURL.toString() );
             } catch (MalformedURLException mue) {
                 logger.error("=== Error ===\nUnable to create discovery URL. (Should never be thrown so this is an " +
                         "interesting situation we find ourselves.. To the bat cave Robin!!)");
