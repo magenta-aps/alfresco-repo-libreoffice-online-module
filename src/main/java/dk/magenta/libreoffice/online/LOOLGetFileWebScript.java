@@ -18,13 +18,12 @@ package dk.magenta.libreoffice.online;
 
 import dk.magenta.libreoffice.online.service.LOOLService;
 import dk.magenta.libreoffice.online.service.LOOLServiceImpl;
-import dk.magenta.libreoffice.online.service.WOPIAccessTokenInfo;
 import org.alfresco.model.ContentModel;
-import org.alfresco.repo.security.authentication.AuthenticationUtil;
-import org.alfresco.repo.security.permissions.AccessDeniedException;
 import org.alfresco.service.cmr.repository.*;
 import org.apache.chemistry.opencmis.commons.impl.IOUtils;
-import org.springframework.extensions.webscripts.*;
+import org.springframework.extensions.webscripts.AbstractWebScript;
+import org.springframework.extensions.webscripts.WebScriptRequest;
+import org.springframework.extensions.webscripts.WebScriptResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,7 +67,6 @@ public class LOOLGetFileWebScript extends AbstractWebScript {
     public void setNodeService(NodeService nodeService) {
         this.nodeService = nodeService;
     }
-
 
     public void setContentService(ContentService contentService) {
         this.contentService = contentService;
