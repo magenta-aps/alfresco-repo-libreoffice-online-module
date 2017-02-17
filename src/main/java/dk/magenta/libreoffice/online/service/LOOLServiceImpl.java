@@ -7,6 +7,7 @@ import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.webscripts.Status;
@@ -21,6 +22,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -53,11 +55,11 @@ public class LOOLServiceImpl implements LOOLService {
     /**
      * This holds a map of the the "token info(s)" mapped to a file.
      * Each token info is mapped to a user, so in essence a user may only have one token info per file
-     *
+     * <p>
      * {
-     *     fileId: { <== The id of the nodeRef that refers to the file
-     *          userName: WOPIAccessTokenInfo
-     *     }
+     * fileId: { <== The id of the nodeRef that refers to the file
+     * userName: WOPIAccessTokenInfo
+     * }
      * }
      */
     private Map<String, Map<String, WOPIAccessTokenInfo>> fileIdAccessTokenMap
@@ -186,6 +188,8 @@ public class LOOLServiceImpl implements LOOLService {
     public void init() {
         if (wopiBaseURL == null) {
             try {
+                logger.warn("******* Warning *******\nThe wopiBaseURL param wasn't found in alfresco-global.properties."
+                        + "Assuming lool service is on the same host and setting url to match.");
                 wopiBaseURL = new URL("https", sysAdminParams.getAlfrescoHost(),
                         DEFAULT_WOPI_PORT, "/");
             } catch (MalformedURLException e) {
@@ -195,11 +199,13 @@ public class LOOLServiceImpl implements LOOLService {
         }
 
         //We should actually never throw an exception here unless of course.......
-        if (wopiDiscoveryURL == null){
+        if (wopiDiscoveryURL == null) {
             try {
+                logger.warn("******* Warning *******\nThe wopiDiscoveryURL param wasn't found in " +
+                        "alfresco-global.properties. \nWe will assume that the discovery.xml file is hosted on this" +
+                        "server and .");
                 wopiDiscoveryURL = new URL(wopiBaseURL.getProtocol() + wopiBaseURL.getHost() + wopiBaseURL.getPort() + "/discovery");
-            }
-            catch (MalformedURLException mue){
+            } catch (MalformedURLException mue) {
                 logger.error("=== Error ===\nUnable to create discovery URL. (Should never be thrown so this is an " +
                         "interesting situation we find ourselves.. To the bat cave Robin!!)");
                 throw new AlfrescoRuntimeException("Invalid WOPI Base URL: " + this.wopiBaseURL, mue);
@@ -273,7 +279,16 @@ public class LOOLServiceImpl implements LOOLService {
 
         private InputStream fetchDiscoveryXML() throws IOException {
             HttpURLConnection connection = (HttpURLConnection) this.wopiDiscoveryURL.openConnection();
-            return connection.getInputStream();
+            logger.debug("\n--- debug ---\nHttp connection for discovery xml returned with a [" + connection.getResponseCode() + "] response code.\n");
+            try {
+                byte[] conn = IOUtils.toByteArray(connection.getInputStream());
+                return new ByteArrayInputStream(conn);
+            } catch (IOException e) {
+                logger.warn("===== Error ======\nThere was an error fetching discovery.xml:\n" + e.getMessage());
+                e.printStackTrace();
+                return null;
+            }
+
         }
     }
 }
