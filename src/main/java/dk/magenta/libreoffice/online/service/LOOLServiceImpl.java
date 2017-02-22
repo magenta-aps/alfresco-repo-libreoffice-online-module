@@ -45,6 +45,8 @@ public class LOOLServiceImpl implements LOOLService {
     private static final int DEFAULT_WOPI_PORT = 9980;
 
     private URL wopiBaseURL;
+    //In case alfresco is behind a proxy then we need the proxy's host address
+    private URL alfExternalHost;
     private URL wopiDiscoveryURL;
     private WOPILoader wopiLoader;
     private NodeService nodeService;
@@ -75,6 +77,10 @@ public class LOOLServiceImpl implements LOOLService {
 
     public void setWopiDiscoveryURL(URL wopiDiscoveryURL) {
         this.wopiDiscoveryURL = wopiDiscoveryURL;
+    }
+
+    public void setAlfExternalHost(URL alfExternalHost) {
+        this.alfExternalHost = alfExternalHost;
     }
 
     @Override
@@ -179,6 +185,18 @@ public class LOOLServiceImpl implements LOOLService {
     @Override
     public NodeRef getNodeRefForFileId(String fileId) {
         return new NodeRef("workspace", "SpacesStore", fileId);
+    }
+
+    /**
+     * In the case that Alfresco is behind a proxy and not using the proxy hostname in the alfresco config section of
+     * the alfresco-global.properties file, then we should be able to set a property in alfresco-global.properties for
+     * this service to use.
+     *
+     * @return
+     */
+    @Override
+    public String getAlfrescoProxyDomain() {
+        return alfExternalHost.getHost();
     }
 
     public void setSysAdminParams(SysAdminParams sysAdminParams) {

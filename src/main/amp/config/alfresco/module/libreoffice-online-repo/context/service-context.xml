@@ -24,6 +24,7 @@
           class="dk.magenta.libreoffice.online.service.LOOLServiceImpl" init-method="init">
         <property name="wopiBaseURL" value="${lool.wopi.url}"/>
         <property name="wopiDiscoveryURL" value="${lool.wopi.url.discovery}"/>
+        <property name="alfExternalHost" value="${lool.wopi.alfresco.host}"/>
         <property name="nodeService" ref="NodeService"/>
         <property name="sysAdminParams" ref="sysAdminParams"/>
     </bean>
