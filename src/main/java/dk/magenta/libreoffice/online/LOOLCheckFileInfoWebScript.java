@@ -56,7 +56,8 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
             NodeRef nodeRef = loolService.checkAccessToken(req);
             //TODO Some properties are hard coded for now but we should look into making them sysadmin configurable
             model.put("BaseFileName", getBaseFileName(nodeRef));
-            model.put("DisableCopy", true);
+            //We need to enable this if we want to be able to insert image into the documents
+            model.put("DisableCopy", false);
             model.put("DisablePrint", true);
             model.put("DisableExport", true);
             model.put("HideExportOption", true);
@@ -68,6 +69,10 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
             model.put("UserCanWrite", true);
             model.put("UserFriendlyName", AuthenticationUtil.getRunAsUser());
             model.put("Version",  getDocumentVersion(nodeRef));
+            //Host from which token generation request originated
+            model.put("PostMessageOrigin",  loolService.getAlfrescoProxyDomain());
+            //Search https://www.collaboraoffice.com/category/community-en/ for EnableOwnerTermination
+            model.put("EnableOwnerTermination",  false);
         }
         catch(Exception ge){
             throw new WebScriptException(Status.STATUS_BAD_REQUEST, "error returning file nodeRef\nReason:\n" + ge.getMessage());
