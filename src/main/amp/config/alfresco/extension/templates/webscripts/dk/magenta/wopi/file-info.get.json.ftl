@@ -8,7 +8,7 @@
     "HideSaveOption":${HideSaveOption?c},
     "HidePrintOption":${HidePrintOption?c},
     "OwnerId":"${OwnerId?js_string}",
-    "PostMessageOrigin":${PostMessageOrigin?js_string},
+    "PostMessageOrigin":"${PostMessageOrigin?js_string}",
     "Size":${Size?c},
     "UserId":"${UserId?js_string}",
     "UserCanWrite":${UserCanWrite?c},
