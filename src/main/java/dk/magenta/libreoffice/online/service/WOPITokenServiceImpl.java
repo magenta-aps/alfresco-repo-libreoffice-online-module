@@ -41,7 +41,7 @@ public class WOPITokenServiceImpl implements WOPITokenService {
      */
     @Override
     public NodeRef getFileNodeRef(WOPIAccessTokenInfo tokenInfo) {
-        NodeRef fileNodeRef = new NodeRef("workSpace", "SpacesStore", tokenInfo.getFileId());
+        NodeRef fileNodeRef = new NodeRef("workspace", "SpacesStore", tokenInfo.getFileId());
         if (nodeService.exists(fileNodeRef))
             return fileNodeRef;
         else return null;
