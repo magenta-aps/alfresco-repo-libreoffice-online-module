@@ -54,10 +54,10 @@ public class WOPITokenServiceImpl implements WOPITokenService {
      * @return
      */
     @Override
-    public PersonService.PersonInfo getUserInfoOfToken(WOPIAccessTokenInfo tokenInfo) {
+    public PersonInfo getUserInfoOfToken(WOPIAccessTokenInfo tokenInfo) {
         try{
             NodeRef personNode = personService.getPerson(tokenInfo.getUserName());
-            PersonService.PersonInfo personInfo = personService.getPerson(personNode);
+            PersonInfo personInfo = new PersonInfo(personService.getPerson(personNode));
             return personInfo;
         }
         catch(NoSuchPersonException | NullPointerException npe){

@@ -16,11 +16,11 @@ limitations under the License.
 */
 package dk.magenta.libreoffice.online;
 
+import dk.magenta.libreoffice.online.service.PersonInfo;
 import dk.magenta.libreoffice.online.service.WOPIAccessTokenInfo;
 import dk.magenta.libreoffice.online.service.WOPITokenService;
 import org.alfresco.model.ContentModel;
 import org.alfresco.service.cmr.repository.*;
-import org.alfresco.service.cmr.security.PersonService;
 import org.springframework.extensions.webscripts.*;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
         try {
             WOPIAccessTokenInfo tokenInfo = wopiTokenService.getTokenInfo(req);
             NodeRef nodeRef = wopiTokenService.getFileNodeRef(tokenInfo);
-            PersonService.PersonInfo person = wopiTokenService.getUserInfoOfToken(tokenInfo);
+            PersonInfo person = wopiTokenService.getUserInfoOfToken(tokenInfo);
 
             ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
             writer.putContent(req.getContent().getInputStream());

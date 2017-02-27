@@ -1,7 +1,6 @@
 package dk.magenta.libreoffice.online.service;
 
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.security.PersonService;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 
 /**
@@ -24,7 +23,7 @@ public interface WOPITokenService {
      * @param tokenInfo
      * @return
      */
-    PersonService.PersonInfo getUserInfoOfToken(WOPIAccessTokenInfo tokenInfo);
+    PersonInfo getUserInfoOfToken(WOPIAccessTokenInfo tokenInfo);
 
     /**
      * Gets a token from the request params
