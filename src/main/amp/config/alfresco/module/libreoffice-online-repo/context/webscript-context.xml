@@ -37,9 +37,9 @@
 
 	<bean id="webscript.dk.magenta.wopi.file.post" class="dk.magenta.libreoffice.online.LOOLPutFileWebScript"
 		  parent="webscript">
-		<property name="loolService" ref="LOOLService"/>
-		<property name="nodeService" ref="NodeService"/>
 		<property name="contentService" ref="ContentService"/>
+		<property name="nodeService" ref="NodeService"/>
+		<property name="wopiTokenService" ref="LOOLWPOITokenService" />
 	</bean>
 
 	<bean id="webscript.dk.magenta.wopi.lool-host.get" class="dk.magenta.libreoffice.online.LOOLServiceUrlInfoWebScript"

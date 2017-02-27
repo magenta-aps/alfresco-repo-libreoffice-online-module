@@ -16,29 +16,22 @@ limitations under the License.
 */
 package dk.magenta.libreoffice.online;
 
-import dk.magenta.libreoffice.online.service.LOOLService;
-import dk.magenta.libreoffice.online.service.LOOLServiceImpl;
+import dk.magenta.libreoffice.online.service.WOPIAccessTokenInfo;
+import dk.magenta.libreoffice.online.service.WOPITokenService;
 import org.alfresco.model.ContentModel;
-import org.alfresco.service.cmr.repository.ContentService;
-import org.alfresco.service.cmr.repository.ContentWriter;
-import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.repository.NodeService;
-import org.springframework.extensions.webscripts.AbstractWebScript;
-import org.springframework.extensions.webscripts.WebScriptException;
-import org.springframework.extensions.webscripts.WebScriptRequest;
-import org.springframework.extensions.webscripts.WebScriptResponse;
+import org.alfresco.service.cmr.repository.*;
+import org.alfresco.service.cmr.security.PersonService;
+import org.springframework.extensions.webscripts.*;
 
 import java.io.IOException;
 
 public class LOOLPutFileWebScript extends AbstractWebScript {
-    private LOOLService loolService;
+    private WOPITokenService wopiTokenService;
     private NodeService nodeService;
     private ContentService contentService;
 
     @Override
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
-        NodeRef nodeRef = loolService.checkAccessToken(req);
-
         String wopiOverrideHeader = req.getHeader("X-WOPI-Override");
         if (wopiOverrideHeader == null) {
             wopiOverrideHeader = req.getHeader("X-WOPIOverride");
@@ -47,21 +40,36 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
             throw new WebScriptException("X-WOPI-Override header must be present and equal to 'PUT'");
         }
 
-        ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
-        writer.putContent(req.getContent().getInputStream());
-        writer.guessMimetype((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
-        writer.guessEncoding();
+        try {
+            WOPIAccessTokenInfo tokenInfo = wopiTokenService.getTokenInfo(req);
+            NodeRef nodeRef = wopiTokenService.getFileNodeRef(tokenInfo);
+            PersonService.PersonInfo person = wopiTokenService.getUserInfoOfToken(tokenInfo);
+
+            ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
+            writer.putContent(req.getContent().getInputStream());
+            writer.guessMimetype((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
+            writer.guessEncoding();
+            nodeService.setProperty(nodeRef, ContentModel.PROP_MODIFIER, person.getUserName());
+        }
+        catch(ContentIOException | WebScriptException we){
+            we.printStackTrace();
+            if (we.getClass() == ContentIOException.class)
+                throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR, "Error writing to file");
+            else if (we.getClass() == WebScriptException.class)
+                throw new WebScriptException(Status.STATUS_UNAUTHORIZED, "Access token invalid or expired");
+            else
+                throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR, "Unidentified problem writing to file" +
+                        "please consult system administrator for help on this issue ");
+        }
     }
 
-
-    public void setLoolService(LOOLServiceImpl loolService) {
-        this.loolService = loolService;
+    public void setWopiTokenService(WOPITokenService wopiTokenService) {
+        this.wopiTokenService = wopiTokenService;
     }
 
     public void setNodeService(NodeService nodeService) {
         this.nodeService = nodeService;
     }
-
 
     public void setContentService(ContentService contentService) {
         this.contentService = contentService;
