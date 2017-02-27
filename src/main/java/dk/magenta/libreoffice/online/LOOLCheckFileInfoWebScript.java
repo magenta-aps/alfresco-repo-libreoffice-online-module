@@ -20,7 +20,6 @@ import dk.magenta.libreoffice.online.service.LOOLService;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.repository.ContentData;
-import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.apache.commons.io.FilenameUtils;
@@ -39,8 +38,6 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
     private static final Logger logger = LoggerFactory.getLogger(LOOLCheckFileInfoWebScript.class);
     private LOOLService loolService;
     private NodeService nodeService;
-    private ContentService contentService;
-
     /**
      * https://msdn.microsoft.com/en-us/library/hh622920(v=office.12).aspx search for  "optional": false
      * to see mandatory parameters. (As of 29/11/2016 when this was modified, SHA is no longer needed)
