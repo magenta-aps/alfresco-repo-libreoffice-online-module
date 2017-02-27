@@ -31,8 +31,8 @@
 
     <!--A simple service for dealing with token-->
     <bean id="LOOLWPOITokenService" class="dk.magenta.libreoffice.online.service.WOPITokenServiceImpl">
-        <property name="nodeService" ref="NodeService"/>
-        <property name="personService" ref="PersonService"/>
+        <property name="nodeService" ref="nodeService"/>
+        <property name="personService" ref="personService"/>
         <property name="loolService" ref="LOOLService" />
     </bean>
 
