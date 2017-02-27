@@ -20,6 +20,7 @@ import dk.magenta.libreoffice.online.service.LOOLService;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.repository.ContentData;
+import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.apache.commons.io.FilenameUtils;
@@ -38,6 +39,7 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
     private static final Logger logger = LoggerFactory.getLogger(LOOLCheckFileInfoWebScript.class);
     private LOOLService loolService;
     private NodeService nodeService;
+    private ContentService contentService;
 
     /**
      * https://msdn.microsoft.com/en-us/library/hh622920(v=office.12).aspx search for  "optional": false
@@ -63,6 +65,7 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
             model.put("HideExportOption", true);
             model.put("HideSaveOption", false);
             model.put("HidePrintOption", true);
+            model.put("LastModifiedTime", nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIED));
             model.put("OwnerId", nodeService.getProperty(nodeRef, ContentModel.PROP_CREATOR).toString());
             model.put("Size", getSize(nodeRef));
             model.put("UserId", AuthenticationUtil.getRunAsUser());
