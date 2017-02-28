@@ -61,11 +61,16 @@ public class WOPITokenServiceImpl implements WOPITokenService {
             return personInfo;
         }
         catch(NoSuchPersonException | NullPointerException npe){
-            if (npe.getClass().equals(NoSuchPersonException.class))
-                logger.error("Unable to retrieve person from user id ["+tokenInfo.getUserName()+"] specified in token.");
-            if (npe.getClass().equals(NullPointerException.class))
-                logger.error("Token info is null.");
             npe.printStackTrace();
+
+            if (npe.getClass().equals(NoSuchPersonException.class)) {
+                logger.error("Unable to retrieve person from user id [" + tokenInfo.getUserName() + "] specified in token.");
+                throw new NoSuchPersonException("Unable to verify that the person exists. Please contact the system administrator");
+            }
+            if (npe.getClass().equals(NullPointerException.class)) {
+                logger.error("Token info is null.");
+                throw new NullPointerException("The token should not be null");
+            }
             return null;
         }
     }
