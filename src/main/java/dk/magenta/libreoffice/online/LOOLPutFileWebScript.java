@@ -20,6 +20,7 @@ import dk.magenta.libreoffice.online.service.PersonInfo;
 import dk.magenta.libreoffice.online.service.WOPIAccessTokenInfo;
 import dk.magenta.libreoffice.online.service.WOPITokenService;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.repository.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -47,25 +48,34 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
 
         try {
             WOPIAccessTokenInfo tokenInfo = wopiTokenService.getTokenInfo(req);
-            NodeRef nodeRef = wopiTokenService.getFileNodeRef(tokenInfo);
-            //Verifying that the user actually exists
-            PersonInfo person = wopiTokenService.getUserInfoOfToken(tokenInfo);
-            if(StringUtils.isBlank(person.getUserName()) )
-                throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR,
-                        "The user no longer appears to exist.");
+            if(tokenInfo != null) {
+                AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Object>() {
+                    @Override
+                    public Object doWork() throws Exception {
+                        NodeRef nodeRef = wopiTokenService.getFileNodeRef(tokenInfo);
+                        //Verifying that the user actually exists
+                        PersonInfo person = wopiTokenService.getUserInfoOfToken(tokenInfo);
+                        if(StringUtils.isBlank(person.getUserName()) )
+                            throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR,
+                                    "The user no longer appears to exist.");
 
-            ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
-            writer.putContent(req.getContent().getInputStream());
-            writer.guessMimetype((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
-            writer.guessEncoding();
+                        ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
+                        writer.putContent(req.getContent().getInputStream());
+                        writer.guessMimetype((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
+                        writer.guessEncoding();
 
-            logger.error("\n****** Debug testing ********\n\t\tToken: "+tokenInfo.getAccessToken()
-            +"\n\t\tFileId: "+ tokenInfo.getFileId()+"\n\t\tUserName: "+tokenInfo.getUserName()+"\n");
-            
-            nodeService.setProperty(nodeRef, ContentModel.PROP_MODIFIER, tokenInfo.getUserName());
+                        logger.error("\n****** Debug testing ********\n\t\tToken: "+tokenInfo.getAccessToken()
+                                +"\n\t\tFileId: "+ tokenInfo.getFileId()+"\n\t\tUserName: "+tokenInfo.getUserName()+"\n");
 
-            logger.error("Modifier for the above nodeRef ["+nodeRef.toString()+"] is: "
-                    + nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIER));
+                        nodeService.setProperty(nodeRef, ContentModel.PROP_MODIFIER, tokenInfo.getUserName());
+
+                        logger.error("Modifier for the above nodeRef ["+nodeRef.toString()+"] is: "
+                                + nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIER));
+                        return null;
+                    }
+                });
+            }
+
         }
         catch(ContentIOException | WebScriptException we){
             we.printStackTrace();
