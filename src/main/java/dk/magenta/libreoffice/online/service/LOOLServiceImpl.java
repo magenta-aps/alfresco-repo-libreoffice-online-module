@@ -57,7 +57,8 @@ public class LOOLServiceImpl implements LOOLService {
 
     /**
      * This holds a map of the the "token info(s)" mapped to a file.
-     * Each token info is mapped to a user, so in essence a user may only have one token info per file
+     * Each token info is mapped to a user, so in essence a user may only have one token info per file.
+     * <FileId, <userName, tokenInfo> >
      * <p>
      * {
      * fileId: { <== The id of the nodeRef that refers to the file

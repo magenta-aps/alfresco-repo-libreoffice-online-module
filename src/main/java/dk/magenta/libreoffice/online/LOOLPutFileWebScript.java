@@ -21,17 +21,22 @@ import dk.magenta.libreoffice.online.service.WOPIAccessTokenInfo;
 import dk.magenta.libreoffice.online.service.WOPITokenService;
 import org.alfresco.model.ContentModel;
 import org.alfresco.service.cmr.repository.*;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.webscripts.*;
 
 import java.io.IOException;
 
 public class LOOLPutFileWebScript extends AbstractWebScript {
+    private static final Log logger = LogFactory.getLog(LOOLPutFileWebScript.class);
     private WOPITokenService wopiTokenService;
     private NodeService nodeService;
     private ContentService contentService;
 
     @Override
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
+
         String wopiOverrideHeader = req.getHeader("X-WOPI-Override");
         if (wopiOverrideHeader == null) {
             wopiOverrideHeader = req.getHeader("X-WOPIOverride");
@@ -43,13 +48,24 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
         try {
             WOPIAccessTokenInfo tokenInfo = wopiTokenService.getTokenInfo(req);
             NodeRef nodeRef = wopiTokenService.getFileNodeRef(tokenInfo);
+            //Verifying that the user actually exists
             PersonInfo person = wopiTokenService.getUserInfoOfToken(tokenInfo);
+            if(StringUtils.isBlank(person.getUserName()) )
+                throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR,
+                        "The user no longer appears to exist.");
 
             ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
             writer.putContent(req.getContent().getInputStream());
             writer.guessMimetype((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
             writer.guessEncoding();
-            nodeService.setProperty(nodeRef, ContentModel.PROP_MODIFIER, person.getUserName());
+
+            logger.error("\n****** Debug testing ********\n\t\tToken: "+tokenInfo.getAccessToken()
+            +"\n\t\tFileId: "+ tokenInfo.getFileId()+"\n\t\tUserName: "+tokenInfo.getUserName()+"\n");
+            
+            nodeService.setProperty(nodeRef, ContentModel.PROP_MODIFIER, tokenInfo.getUserName());
+
+            logger.error("Modifier for the above nodeRef ["+nodeRef.toString()+"] is: "
+                    + nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIER));
         }
         catch(ContentIOException | WebScriptException we){
             we.printStackTrace();
