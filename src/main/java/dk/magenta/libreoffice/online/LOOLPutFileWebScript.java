@@ -65,15 +65,15 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
                         writer.guessMimetype((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
                         writer.guessEncoding();
 
-                        logger.error("\n****** Debug testing ********\n\t\tToken: " + tokenInfo.getAccessToken()
+                        logger.debug("\n****** Debug testing ********\n\t\tToken: " + tokenInfo.getAccessToken()
                                 + "\n\t\tFileId: " + tokenInfo.getFileId() + "\n\t\tUserName: " + tokenInfo.getUserName() + "\n");
-                        logger.error("Modifier for the above nodeRef [" + nodeRef.toString() + "] is: "
+                        logger.debug("Modifier for the above nodeRef [" + nodeRef.toString() + "] is: "
                                 + nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIER));
                         return null;
                     }
                 }, person.getUserName());
             }
-            
+
         }
         catch(ContentIOException | WebScriptException we){
             we.printStackTrace();
