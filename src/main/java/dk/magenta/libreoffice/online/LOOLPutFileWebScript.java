@@ -50,12 +50,12 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
             WOPIAccessTokenInfo tokenInfo = wopiTokenService.getTokenInfo(req);
             //Verifying that the user actually exists
             PersonInfo person = wopiTokenService.getUserInfoOfToken(tokenInfo);
+            final NodeRef nodeRef = wopiTokenService.getFileNodeRef(tokenInfo);
 
             if(tokenInfo != null) {
                 AuthenticationUtil.runAs(new AuthenticationUtil.RunAsWork<Object>() {
                     @Override
                     public Object doWork() throws Exception {
-                        NodeRef nodeRef = wopiTokenService.getFileNodeRef(tokenInfo);
                         if (StringUtils.isBlank(person.getUserName()))
                             throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR,
                                     "The user no longer appears to exist.");
@@ -67,12 +67,12 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
 
                         logger.error("\n****** Debug testing ********\n\t\tToken: " + tokenInfo.getAccessToken()
                                 + "\n\t\tFileId: " + tokenInfo.getFileId() + "\n\t\tUserName: " + tokenInfo.getUserName() + "\n");
-                        logger.error("Modifier for the above nodeRef [" + nodeRef.toString() + "] is: "
-                                + nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIER));
                         return null;
                     }
                 }, person.getUserName());
             }
+            logger.error("Modifier for the above nodeRef [" + nodeRef.toString() + "] is: "
+                    + nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIER));
 
         }
         catch(ContentIOException | WebScriptException we){
