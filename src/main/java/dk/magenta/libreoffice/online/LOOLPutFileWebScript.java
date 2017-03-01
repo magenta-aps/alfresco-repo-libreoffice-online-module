@@ -51,19 +51,20 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
             //Verifying that the user actually exists
             PersonInfo person = wopiTokenService.getUserInfoOfToken(tokenInfo);
             final NodeRef nodeRef = wopiTokenService.getFileNodeRef(tokenInfo);
+            if (StringUtils.isBlank(person.getUserName()))
+                throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR,
+                        "The user no longer appears to exist.");
 
             if(tokenInfo != null) {
                 AuthenticationUtil.runAs(new AuthenticationUtil.RunAsWork<Object>() {
                     @Override
                     public Object doWork() throws Exception {
-                        if (StringUtils.isBlank(person.getUserName()))
-                            throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR,
-                                    "The user no longer appears to exist.");
-
                         ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
                         writer.putContent(req.getContent().getInputStream());
                         writer.guessMimetype((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
                         writer.guessEncoding();
+                        //Explicitly setting this property to see if it helps with the modifier caching issue
+                        nodeService.setProperty(nodeRef, ContentModel.PROP_MODIFIER, tokenInfo.getUserName());
 
                         logger.error("\n****** Debug testing ********\n\t\tToken: " + tokenInfo.getAccessToken()
                                 + "\n\t\tFileId: " + tokenInfo.getFileId() + "\n\t\tUserName: " + tokenInfo.getUserName() + "\n");
@@ -82,8 +83,8 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
             else if (we.getClass() == WebScriptException.class)
                 throw new WebScriptException(Status.STATUS_UNAUTHORIZED, "Access token invalid or expired");
             else
-                throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR, "Unidentified problem writing to file" +
-                        "please consult system administrator for help on this issue ");
+                throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR, "\nUnidentified problem writing to file" +
+                        "please consult system administrator for help on this issue.\n ");
         }
     }
 
