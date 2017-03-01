@@ -63,8 +63,6 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
                         writer.putContent(req.getContent().getInputStream());
                         writer.guessMimetype((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
                         writer.guessEncoding();
-                        //Explicitly setting this property to see if it helps with the modifier caching issue
-                        nodeService.setProperty(nodeRef, ContentModel.PROP_MODIFIER, tokenInfo.getUserName());
 
                         logger.error("\n****** Debug testing ********\n\t\tToken: " + tokenInfo.getAccessToken()
                                 + "\n\t\tFileId: " + tokenInfo.getFileId() + "\n\t\tUserName: " + tokenInfo.getUserName() + "\n");
@@ -72,11 +70,14 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
                     }
                 }, tokenInfo.getUserName());
             }
+
+            //Explicitly setting this property to see if it helps with the random modifier issue
+            nodeService.setProperty(nodeRef, ContentModel.PROP_MODIFIER, tokenInfo.getUserName());
+
             logger.error("Modifier for the above nodeRef [" + nodeRef.toString() + "] is: "
                     + nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIER));
-
         }
-        catch(ContentIOException | WebScriptException we){
+        catch(ContentIOException | NullPointerException | WebScriptException we){
             we.printStackTrace();
             if (we.getClass() == ContentIOException.class)
                 throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR, "Error writing to file");
