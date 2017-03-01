@@ -51,7 +51,7 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
             //Verifying that the user actually exists
             PersonInfo person = wopiTokenService.getUserInfoOfToken(tokenInfo);
             final NodeRef nodeRef = wopiTokenService.getFileNodeRef(tokenInfo);
-            if (StringUtils.isBlank(person.getUserName()))
+            if (StringUtils.isBlank(person.getUserName()) && person.getUserName() != tokenInfo.getUserName())
                 throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR,
                         "The user no longer appears to exist.");
 
@@ -70,7 +70,7 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
                                 + "\n\t\tFileId: " + tokenInfo.getFileId() + "\n\t\tUserName: " + tokenInfo.getUserName() + "\n");
                         return null;
                     }
-                }, person.getUserName());
+                }, tokenInfo.getUserName());
             }
             logger.error("Modifier for the above nodeRef [" + nodeRef.toString() + "] is: "
                     + nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIER));
