@@ -39,6 +39,7 @@
 		  parent="webscript">
 		<property name="contentService" ref="ContentService"/>
 		<property name="nodeService" ref="nodeService"/>
+		<property name="retryingTransactionHelper" ref="retryingTransactionHelper" />
 		<property name="wopiTokenService" ref="LOOLWPOITokenService" />
 	</bean>
 

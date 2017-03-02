@@ -21,6 +21,7 @@ import dk.magenta.libreoffice.online.service.WOPIAccessTokenInfo;
 import dk.magenta.libreoffice.online.service.WOPITokenService;
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.cmr.repository.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -34,6 +35,7 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
     private WOPITokenService wopiTokenService;
     private NodeService nodeService;
     private ContentService contentService;
+    private RetryingTransactionHelper retryingTransactionHelper;
 
     @Override
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
@@ -55,29 +57,35 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
                 throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR,
                         "The user no longer appears to exist.");
 
-            if(tokenInfo != null) {
-                AuthenticationUtil.runAs(new AuthenticationUtil.RunAsWork<Object>() {
+            if (tokenInfo != null) {
+                //https://community.alfresco.com/message/809749-re-why-is-the-modifier-of-a-content-a-random-user-from-the-list-of-logged-in-users?commentID=809749&et=watches.email.thread#comment-809749
+                retryingTransactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>() {
                     @Override
-                    public Object doWork() throws Exception {
-                        ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
-                        writer.putContent(req.getContent().getInputStream());
-                        writer.guessMimetype((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
-                        writer.guessEncoding();
+                    public Void execute() throws Throwable {
+                        AuthenticationUtil.pushAuthentication();
+                        try {
+                            AuthenticationUtil.setRunAsUser(tokenInfo.getUserName());
+                            ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
+                            writer.putContent(req.getContent().getInputStream());
+                            writer.guessMimetype((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
+                            writer.guessEncoding();
 
-                        logger.error("\n****** Debug testing ********\n\t\tToken: " + tokenInfo.getAccessToken()
-                                + "\n\t\tFileId: " + tokenInfo.getFileId() + "\n\t\tUserName: " + tokenInfo.getUserName() + "\n");
+                            logger.error("\n****** Debug testing ********\n\t\tToken: " + tokenInfo.getAccessToken()
+                                    + "\n\t\tFileId: " + tokenInfo.getFileId() + "\n\t\tUserName: " + tokenInfo.getUserName() + "\n");
+                        } finally {
+                            AuthenticationUtil.popAuthentication();
+                        }
                         return null;
                     }
-                }, tokenInfo.getUserName());
+                }, false, true);
             }
 
             //Explicitly setting this property to see if it helps with the random modifier issue
-            nodeService.setProperty(nodeRef, ContentModel.PROP_MODIFIER, tokenInfo.getUserName());
+           // nodeService.setProperty(nodeRef, ContentModel.PROP_MODIFIER, tokenInfo.getUserName());
 
             logger.error("Modifier for the above nodeRef [" + nodeRef.toString() + "] is: "
                     + nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIER));
-        }
-        catch(ContentIOException | NullPointerException | WebScriptException we){
+        } catch (ContentIOException | NullPointerException | WebScriptException we) {
             we.printStackTrace();
             if (we.getClass() == ContentIOException.class)
                 throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR, "Error writing to file");
@@ -99,5 +107,9 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
 
     public void setContentService(ContentService contentService) {
         this.contentService = contentService;
+    }
+
+    public void setRetryingTransactionHelper(RetryingTransactionHelper retryingTransactionHelper) {
+        this.retryingTransactionHelper = retryingTransactionHelper;
     }
 }
