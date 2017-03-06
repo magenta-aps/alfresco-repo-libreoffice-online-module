@@ -62,9 +62,9 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
                 retryingTransactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>() {
                     @Override
                     public Void execute() throws Throwable {
-                        AuthenticationUtil.pushAuthentication();
+//                        AuthenticationUtil.pushAuthentication();
                         try {
-                            AuthenticationUtil.setRunAsUser(tokenInfo.getUserName());
+                            AuthenticationUtil.setFullyAuthenticatedUser(tokenInfo.getUserName());
                             ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
                             writer.putContent(req.getContent().getInputStream());
                             writer.guessMimetype((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
@@ -73,7 +73,8 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
                             logger.error("\n****** Debug testing ********\n\t\tToken: " + tokenInfo.getAccessToken()
                                     + "\n\t\tFileId: " + tokenInfo.getFileId() + "\n\t\tUserName: " + tokenInfo.getUserName() + "\n");
                         } finally {
-                            AuthenticationUtil.popAuthentication();
+                            AuthenticationUtil.clearCurrentSecurityContext();
+//                            AuthenticationUtil.popAuthentication();
                         }
                         return null;
                     }
