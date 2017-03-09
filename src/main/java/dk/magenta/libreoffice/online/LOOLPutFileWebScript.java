@@ -62,7 +62,6 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
                 retryingTransactionHelper.doInTransaction(new RetryingTransactionHelper.RetryingTransactionCallback<Void>() {
                     @Override
                     public Void execute() throws Throwable {
-//                        AuthenticationUtil.pushAuthentication();
                         try {
                             AuthenticationUtil.setFullyAuthenticatedUser(tokenInfo.getUserName());
                             ContentWriter writer = contentService.getWriter(nodeRef, ContentModel.PROP_CONTENT, true);
@@ -70,22 +69,19 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
                             writer.guessMimetype((String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME));
                             writer.guessEncoding();
 
-                            logger.error("\n****** Debug testing ********\n\t\tToken: " + tokenInfo.getAccessToken()
+                            logger.info("\n****** Debug testing ********\n\t\tToken: " + tokenInfo.getAccessToken()
                                     + "\n\t\tFileId: " + tokenInfo.getFileId() + "\n\t\tUserName: " + tokenInfo.getUserName() + "\n");
                         } finally {
                             AuthenticationUtil.clearCurrentSecurityContext();
-//                            AuthenticationUtil.popAuthentication();
                         }
                         return null;
                     }
                 }, false, true);
             }
 
-            //Explicitly setting this property to see if it helps with the random modifier issue
-           // nodeService.setProperty(nodeRef, ContentModel.PROP_MODIFIER, tokenInfo.getUserName());
-
-            logger.error("Modifier for the above nodeRef [" + nodeRef.toString() + "] is: "
+            logger.info("Modifier for the above nodeRef [" + nodeRef.toString() + "] is: "
                     + nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIER));
+
         } catch (ContentIOException | NullPointerException | WebScriptException we) {
             we.printStackTrace();
             if (we.getClass() == ContentIOException.class)
