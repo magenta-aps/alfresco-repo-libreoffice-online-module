@@ -17,33 +17,34 @@
 	limitations under the License.
 -->
 <beans>
-	<bean id="webscript.dk.magenta.wopi.token.get"
-		  class="dk.magenta.libreoffice.online.LOOLGetTokenWebScript"
+	<bean id="webscript.dk.magenta.wopi.token.get" class="dk.magenta.libreoffice.online.LOOLGetTokenWebScript"
 		  parent="webscript">
 		<property name="loolService" ref="LOOLService"/>
 	</bean>
 
-	<bean id="webscript.dk.magenta.wopi.file-info.get"
-		  class="dk.magenta.libreoffice.online.LOOLCheckFileInfoWebScript"
+	<bean id="webscript.dk.magenta.wopi.file-info.get" class="dk.magenta.libreoffice.online.LOOLCheckFileInfoWebScript"
 		  parent="webscript">
 		<property name="loolService" ref="LOOLService"/>
 		<property name="nodeService" ref="NodeService"/>
 	</bean>
 
-	<bean id="webscript.dk.magenta.wopi.file.get"
-		  class="dk.magenta.libreoffice.online.LOOLGetFileWebScript"
+	<bean id="webscript.dk.magenta.wopi.file.get" class="dk.magenta.libreoffice.online.LOOLGetFileWebScript"
 		  parent="webscript">
 		<property name="loolService" ref="LOOLService"/>
 		<property name="nodeService" ref="NodeService"/>
 		<property name="contentService" ref="ContentService"/>
 	</bean>
 
-
-	<bean id="webscript.dk.magenta.wopi.file.post"
-		  class="dk.magenta.libreoffice.online.LOOLPutFileWebScript"
+	<bean id="webscript.dk.magenta.wopi.file.post" class="dk.magenta.libreoffice.online.LOOLPutFileWebScript"
 		  parent="webscript">
-		<property name="loolService" ref="LOOLService"/>
-		<property name="nodeService" ref="NodeService"/>
 		<property name="contentService" ref="ContentService"/>
+		<property name="nodeService" ref="nodeService"/>
+		<property name="retryingTransactionHelper" ref="retryingTransactionHelper" />
+		<property name="wopiTokenService" ref="LOOLWPOITokenService" />
+	</bean>
+
+	<bean id="webscript.dk.magenta.wopi.lool-host.get" class="dk.magenta.libreoffice.online.LOOLServiceUrlInfoWebScript"
+		  parent="webscript">
+		<property name="loolServiceUrl" value="${lool.wopi.alfresco.host}"/>
 	</bean>
 </beans>

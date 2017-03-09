@@ -54,4 +54,12 @@ public interface LOOLService {
     String getFileIdForNodeRef(NodeRef nodeRef);
 
     NodeRef getNodeRefForFileId(String fileId);
+
+    /**
+     * In the case that Alfresco is behind a proxy and not using the proxy hostname in the alfresco config section of
+     * the alfresco-global.properties file, then we should be able to set a property in alfresco-global.properties for
+     * this service to use.
+     * @return
+     */
+    String getAlfrescoProxyDomain();
 }
