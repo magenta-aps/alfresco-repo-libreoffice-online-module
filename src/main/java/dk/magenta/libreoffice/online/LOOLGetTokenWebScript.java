@@ -50,6 +50,7 @@ public class LOOLGetTokenWebScript extends DeclarativeWebScript {
             return model;
         }
         model.put("access_token", tokenInfo.getAccessToken());
+        model.put("access_token_ttl", tokenInfo.getExpiresAt().getTime());
         model.put("wopi_src_url", wopiSrcUrl);
         return model;
     }
