@@ -26,6 +26,7 @@
 		  parent="webscript">
 		<property name="loolService" ref="LOOLService"/>
 		<property name="nodeService" ref="NodeService"/>
+		<property name="versionService" ref="versionService" />
 	</bean>
 
 	<bean id="webscript.dk.magenta.wopi.file.get" class="dk.magenta.libreoffice.online.LOOLGetFileWebScript"
