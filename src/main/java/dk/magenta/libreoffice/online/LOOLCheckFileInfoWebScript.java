@@ -135,9 +135,9 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
     }
 
     /**
-     * This get the version of a document, if the document hasn't been versioned yet it adds a versioning aspect to it.
-     * Important to not that there are no checks as to whether the node is  document, hence the node passed to this
-     * method should/must have been sanitized/verified/vetted before hand
+     * This gets the version of a document. If the document hasn't been versioned yet, it adds a versioning aspect to it.
+     * Important to note that there are no checks as to whether the node is a document, hence the node passed to this
+     * method should/must have been sanitized/verified/vetted beforehand.
      * @param nodeRef
      * @return
      */
