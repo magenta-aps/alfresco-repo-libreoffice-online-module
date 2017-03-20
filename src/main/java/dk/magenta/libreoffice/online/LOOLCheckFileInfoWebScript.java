@@ -88,6 +88,11 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
         return model;
     }
 
+    /**
+     * Returns the actual file of the file itself (the cm:name property)
+     * @param nodeRef
+     * @return
+     */
     public String getBaseFileName(NodeRef nodeRef) {
         String name = (String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME);
         if (name != null) {
@@ -97,11 +102,23 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
         }
     }
 
+    /**
+     * Returns the size of the file
+     * @param nodeRef
+     * @return
+     */
     public long getSize(NodeRef nodeRef) {
         ContentData contentData = (ContentData) nodeService.getProperty(nodeRef, ContentModel.PROP_CONTENT);
         return contentData.getSize();
     }
 
+    /**
+     * Previously, it was mandatory that the SHA 256 of the file be returned as part of the WOPI protocol.
+     * It's no longer necessary but we'll leave this here just in case LOOL requires it in the future
+     * @param nodeRef
+     * @return
+     * @throws IOException
+     */
     protected String getSHAhash(NodeRef nodeRef)throws IOException{
         ContentData contentData = (ContentData) nodeService.getProperty(nodeRef, ContentModel.PROP_CONTENT);
         try {
@@ -128,11 +145,11 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
         if(! nodeService.hasAspect(nodeRef, ContentModel.ASPECT_VERSIONABLE)){
             Map<QName, Serializable> initialVersionProps = new HashMap<QName, Serializable>(1, 1.0f);
             versionService.ensureVersioningEnabled(nodeRef, initialVersionProps);
-//            return "1.0";
         }
         return nodeService.getProperty(nodeRef, ContentModel.PROP_VERSION_LABEL).toString();
     }
 
+    //<editor-fold desc="Bean setters">
     public void setLoolService(LOOLService loolService) {
         this.loolService = loolService;
     }
@@ -144,4 +161,5 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
     public void setVersionService(VersionService versionService) {
         this.versionService = versionService;
     }
+    //</editor-fold>
 }
