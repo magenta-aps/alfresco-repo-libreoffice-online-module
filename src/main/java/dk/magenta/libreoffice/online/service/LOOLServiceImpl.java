@@ -89,6 +89,15 @@ public class LOOLServiceImpl implements LOOLService {
         this.wopiTokenService = wopiTokenService;
     }
 
+    /**
+     * Generate and store an access token only valid for the current
+     * user/file id combination.
+     *
+     * If an existing access token exists for the user/file id combination,
+     * then extend its expiration date and return it.
+     * @param fileId
+     * @return
+     */
     @Override
     public WOPIAccessTokenInfo createAccessToken(String fileId) {
         String userName = AuthenticationUtil.getRunAsUser();
@@ -120,11 +129,23 @@ public class LOOLServiceImpl implements LOOLService {
         return tokenInfo;
     }
 
+    /**
+     * Generates a random access token.
+     * @return
+     */
     @Override
     public String generateAccessToken() {
         return new BigInteger(130, random).toString(32);
     }
 
+    /**
+     * Return stored info about the given token if it exists. Otherwise,
+     * return null.
+     *
+     * @param accessToken
+     * @param fileId
+     * @return
+     */
     @Override
     public WOPIAccessTokenInfo getAccessToken(String accessToken, String fileId) {
         Map<String, WOPIAccessTokenInfo> tokenInfoMap = fileIdAccessTokenMap.get(fileId);
@@ -153,6 +174,16 @@ public class LOOLServiceImpl implements LOOLService {
         }
     }
 
+    /**
+     * Check the access token given in the request and return the nodeRef
+     * corresponding to the file id passed to the request.
+     *
+     * Additionally, set the runAs user to the user corresponding to the token.
+     *
+     * @param req
+     * @throws WebScriptException
+     * @return
+     */
     @Override
     public NodeRef checkAccessToken(WebScriptRequest req) throws WebScriptException {
         String fileId = req.getServiceMatch().getTemplateVars().get("fileId");
@@ -183,11 +214,23 @@ public class LOOLServiceImpl implements LOOLService {
         return wopiLoader.getSrcURL(contentData.getMimetype(), action);
     }
 
+    /**
+     * Returns the id component of a NodeRef
+     * @param nodeRef
+     * @return
+     */
     @Override
     public String getFileIdForNodeRef(NodeRef nodeRef) {
         return nodeRef.getId();
     }
 
+    /**
+     * Returns a NodeRef given a file Id.
+     * Note:
+     * Checks to see if the node exists aren't performed
+     * @param fileId
+     * @return
+     */
     @Override
     public NodeRef getNodeRefForFileId(String fileId) {
         return new NodeRef("workspace", "SpacesStore", fileId);

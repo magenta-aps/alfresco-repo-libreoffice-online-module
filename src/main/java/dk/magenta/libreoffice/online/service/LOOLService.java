@@ -49,10 +49,30 @@ public interface LOOLService {
      */
     NodeRef checkAccessToken(WebScriptRequest req) throws WebScriptException;
 
+    /**
+     * Returns the WOPI src URL for a given nodeRef and action.
+     *
+     * @param nodeRef
+     * @param action
+     * @return
+     * @throws IOException
+     */
     String getWopiSrcURL(NodeRef nodeRef, String action) throws IOException;
 
+    /**
+     * Returns the id component of a NodeRef
+     * @param nodeRef
+     * @return
+     */
     String getFileIdForNodeRef(NodeRef nodeRef);
 
+    /**
+     * Returns a NodeRef given a file Id.
+     * Note:
+     * Checks to see if the node exists aren't performed
+     * @param fileId
+     * @return
+     */
     NodeRef getNodeRefForFileId(String fileId);
 
     /**

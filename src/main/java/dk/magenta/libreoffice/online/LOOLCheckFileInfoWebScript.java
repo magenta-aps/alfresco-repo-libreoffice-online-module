@@ -22,12 +22,15 @@ import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.service.cmr.repository.ContentData;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.version.VersionService;
+import org.alfresco.service.namespace.QName;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.extensions.webscripts.*;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -39,6 +42,8 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
     private static final Logger logger = LoggerFactory.getLogger(LOOLCheckFileInfoWebScript.class);
     private LOOLService loolService;
     private NodeService nodeService;
+    private VersionService versionService;
+
     /**
      * https://msdn.microsoft.com/en-us/library/hh622920(v=office.12).aspx search for  "optional": false
      * to see mandatory parameters. (As of 29/11/2016 when this was modified, SHA is no longer needed)
@@ -121,9 +126,10 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
      */
     public String getDocumentVersion(NodeRef nodeRef){
         if(! nodeService.hasAspect(nodeRef, ContentModel.ASPECT_VERSIONABLE)){
-            nodeService.addAspect(nodeRef, ContentModel.ASPECT_VERSIONABLE, null);
+            Map<QName, Serializable> initialVersionProps = new HashMap<QName, Serializable>(1, 1.0f);
+            versionService.ensureVersioningEnabled(nodeRef, initialVersionProps);
+//            return "1.0";
         }
-
         return nodeService.getProperty(nodeRef, ContentModel.PROP_VERSION_LABEL).toString();
     }
 
@@ -133,5 +139,9 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
 
     public void setNodeService(NodeService nodeService) {
         this.nodeService = nodeService;
+    }
+
+    public void setVersionService(VersionService versionService) {
+        this.versionService = versionService;
     }
 }
