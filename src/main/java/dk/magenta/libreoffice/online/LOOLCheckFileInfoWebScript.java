@@ -33,6 +33,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,8 +62,12 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
         Map<String, Object> model = new HashMap<>();
         try {
             NodeRef nodeRef = loolService.checkAccessToken(req);
-            //Can't shuttle date straight to long so must get it into the date format first.
             Date lastModifiedDate =  (Date) nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIED);
+            //Convert lastModifiedTime to ISO 8601 according to:
+            // https://github.com/LibreOffice/online/blob/master/wsd/Storage.cpp#L460 or look in the
+            // std::unique_ptr<WopiStorage::WOPIFileInfo> WopiStorage::getWOPIFileInfo
+            String dte = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX").withZone(ZoneOffset.UTC)
+                         .format(Instant.ofEpochMilli(lastModifiedDate.getTime()));
             //TODO Some properties are hard coded for now but we should look into making them sysadmin configurable
             model.put("BaseFileName", getBaseFileName(nodeRef));
             //We need to enable this if we want to be able to insert image into the documents
@@ -70,7 +77,7 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
             model.put("HideExportOption", true);
             model.put("HideSaveOption", false);
             model.put("HidePrintOption", true);
-            model.put("LastModifiedTime", lastModifiedDate.getTime());
+            model.put("LastModifiedTime", dte);
             model.put("OwnerId", nodeService.getProperty(nodeRef, ContentModel.PROP_CREATOR).toString());
             model.put("Size", getSize(nodeRef));
             model.put("UserId", AuthenticationUtil.getRunAsUser());
