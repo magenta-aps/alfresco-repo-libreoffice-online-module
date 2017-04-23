@@ -66,7 +66,7 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
             //Convert lastModifiedTime to ISO 8601 according to:
             // https://github.com/LibreOffice/online/blob/master/wsd/Storage.cpp#L460 or look in the
             // std::unique_ptr<WopiStorage::WOPIFileInfo> WopiStorage::getWOPIFileInfo
-            String dte = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX").withZone(ZoneOffset.UTC)
+            String dte = DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC)
                          .format(Instant.ofEpochMilli(lastModifiedDate.getTime()));
             //TODO Some properties are hard coded for now but we should look into making them sysadmin configurable
             model.put("BaseFileName", getBaseFileName(nodeRef));
