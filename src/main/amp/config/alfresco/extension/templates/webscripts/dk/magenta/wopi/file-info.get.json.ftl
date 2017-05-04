@@ -7,7 +7,7 @@
     "HideExportOption":${HideExportOption?c},
     "HideSaveOption":${HideSaveOption?c},
     "HidePrintOption":${HidePrintOption?c},
-    "LastModifiedTime":"${LastModifiedTime?c}",
+    "LastModifiedTime":"${LastModifiedTime?js_string}",
     "OwnerId":"${OwnerId?js_string}",
     "PostMessageOrigin":"${PostMessageOrigin?js_string}",
     "Size":${Size?c},
