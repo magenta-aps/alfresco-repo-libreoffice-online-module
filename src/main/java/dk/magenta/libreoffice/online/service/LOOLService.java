@@ -5,6 +5,7 @@ import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * Created by seth on 30/04/16.
@@ -82,4 +83,10 @@ public interface LOOLService {
      * @return
      */
     String getAlfrescoProxyDomain();
+
+    /**
+     * PostMessageOrigin need full URI.
+     * @return
+     */
+	URL getAlfExternalHost();
 }
