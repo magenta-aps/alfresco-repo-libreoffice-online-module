@@ -85,7 +85,7 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
             model.put("UserFriendlyName", AuthenticationUtil.getRunAsUser());
             model.put("Version",  getDocumentVersion(nodeRef));
             //Host from which token generation request originated
-            model.put("PostMessageOrigin",  loolService.getAlfrescoProxyDomain());
+            model.put("PostMessageOrigin", loolService.getAlfExternalHost().toString());
             //Search https://www.collaboraoffice.com/category/community-en/ for EnableOwnerTermination
             model.put("EnableOwnerTermination",  false);
         }

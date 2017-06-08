@@ -247,6 +247,11 @@ public class LOOLServiceImpl implements LOOLService {
     public String getAlfrescoProxyDomain() {
         return alfExternalHost.getHost();
     }
+    
+    @Override
+    public URL getAlfExternalHost() {
+		return alfExternalHost;
+	}
 
     public void setSysAdminParams(SysAdminParams sysAdminParams) {
         this.sysAdminParams = sysAdminParams;
