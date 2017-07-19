@@ -28,7 +28,7 @@
         <!-- Filter module.properties and put at top level in the AMP -->
         <file>
             <source>src/main/resources/alfresco/module/${project.artifactId}/module.properties</source>
-            <filtered>true</filtered>
+            <filtered>false</filtered>
         </file>
         <!-- Include AMP -> WAR mapping file (needed for custom mappings) -->
         <file>
