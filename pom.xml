@@ -170,23 +170,23 @@
                 the layout of your AMP. The end result is that Maven will produce both a JAR file and an AMP with your
                 module.
             -->
-            <!--
-                    <plugin>
+            <!-- -->
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.6</version>
-                        <executions>
-                            <execution>
+                <executions>
+                    <execution>
                         <id>build-amp-file</id>
                         <phase>package</phase>
-                                <goals>
+                        <goals>
                             <goal>single</goal>
-                                </goals>
-                                <configuration>
+                        </goals>
+                        <configuration>
                             <appendAssemblyId>false</appendAssemblyId>
                             <descriptor>src/main/assembly/amp.xml</descriptor>
-                                </configuration>
-                            </execution>
-                        </executions>
+                        </configuration>
+                    </execution>
+                </executions>
                 <dependencies>
                     <dependency>
                         <groupId>org.alfresco.maven.plugin</groupId>
@@ -194,8 +194,8 @@
                         <version>${alfresco.sdk.version}</version>
                     </dependency>
                 </dependencies>
-                    </plugin>
-            -->
+            </plugin>
+            <!-- -->
 
             <!-- Hot reloading with JRebel -->
             <plugin>
