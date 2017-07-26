@@ -30,7 +30,7 @@ That should print the installed version of your JDK.
 
 ### Contributing
 
-Submit pull a pull request. You're also wlecomed to fork the code and use it for your own purposes
+Submit pull a pull request. You're also welcome to fork the code for your own purpose(s).
 
 ### License
 
