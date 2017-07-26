@@ -64,8 +64,8 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
             NodeRef nodeRef = loolService.checkAccessToken(req);
             Date lastModifiedDate =  (Date) nodeService.getProperty(nodeRef, ContentModel.PROP_MODIFIED);
             //Convert lastModifiedTime to ISO 8601 according to:
-            // https://github.com/LibreOffice/online/blob/master/wsd/Storage.cpp#L460 or look in the
-            // std::unique_ptr<WopiStorage::WOPIFileInfo> WopiStorage::getWOPIFileInfo
+            // https://github.com/LibreOffice/online/blob/master/wsd/Storage.cpp#L464 or look in the
+            // std::unique_ptr<WopiStorage::WOPIFileInfo> WopiStorage::getWOPIFileInfo method
             String dte = DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC)
                          .format(Instant.ofEpochMilli(lastModifiedDate.getTime()));
             //TODO Some properties are hard coded for now but we should look into making them sysadmin configurable
@@ -82,15 +82,18 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
             model.put("Size", getSize(nodeRef));
             model.put("UserId", AuthenticationUtil.getRunAsUser());
             model.put("UserCanWrite", true);
+            model.put("UserExtraInfo", "");
             model.put("UserFriendlyName", AuthenticationUtil.getRunAsUser());
             model.put("Version",  getDocumentVersion(nodeRef));
             //Host from which token generation request originated
             model.put("PostMessageOrigin", loolService.getAlfExternalHost().toString());
             //Search https://www.collaboraoffice.com/category/community-en/ for EnableOwnerTermination
+            // last found here: https://www.collaboraoffice.com/community-en/code-2-0-updates-2/
             model.put("EnableOwnerTermination",  false);
         }
         catch(Exception ge){
-            throw new WebScriptException(Status.STATUS_BAD_REQUEST, "error returning file nodeRef\nReason:\n" + ge.getMessage());
+            throw new WebScriptException(Status.STATUS_BAD_REQUEST, "Error returning file nodeRef\nReason:\n"
+                    + ge.getMessage());
         }
         return model;
     }
@@ -103,7 +106,7 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
     public String getBaseFileName(NodeRef nodeRef) {
         String name = (String) nodeService.getProperty(nodeRef, ContentModel.PROP_NAME);
         if (name != null) {
-            return FilenameUtils.getBaseName(name);
+            return FilenameUtils.getName(name);
         } else {
             return "";
         }

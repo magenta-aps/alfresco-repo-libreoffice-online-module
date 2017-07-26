@@ -90,11 +90,9 @@ public class LOOLServiceImpl implements LOOLService {
     }
 
     /**
-     * Generate and store an access token only valid for the current
-     * user/file id combination.
+     * Generate and store an access token only valid for the current user/file id combination.
+     * If access token exists for the user/file id combination, then extend its expiration date and return it.
      *
-     * If an existing access token exists for the user/file id combination,
-     * then extend its expiration date and return it.
      * @param fileId
      * @return
      */
@@ -108,8 +106,7 @@ public class LOOLServiceImpl implements LOOLService {
         if (tokenInfoMap != null) {
             tokenInfo = tokenInfoMap.get(userName);
             if (tokenInfo != null) {
-                if (tokenInfo.isValid() &&
-                        tokenInfo.getFileId().equals(fileId) &&
+                if (tokenInfo.isValid() && tokenInfo.getFileId().equals(fileId) &&
                         tokenInfo.getUserName().equals(userName)) {
                     // Renew token for a new time-to-live period.
                     tokenInfo.setExpiresAt(newExpiresAt);
@@ -120,8 +117,7 @@ public class LOOLServiceImpl implements LOOLService {
             }
         }
         if (tokenInfo == null) {
-            tokenInfo = new WOPIAccessTokenInfo(generateAccessToken(),
-                    now, newExpiresAt, fileId, userName);
+            tokenInfo = new WOPIAccessTokenInfo(generateAccessToken(), now, newExpiresAt, fileId, userName);
             if (fileIdAccessTokenMap.get(fileId) == null)
                 fileIdAccessTokenMap.put(fileId, new HashMap<String, WOPIAccessTokenInfo>());
             fileIdAccessTokenMap.get(fileId).put(userName, tokenInfo);
@@ -139,8 +135,7 @@ public class LOOLServiceImpl implements LOOLService {
     }
 
     /**
-     * Return stored info about the given token if it exists. Otherwise,
-     * return null.
+     * Return stored info about the given token if it exists. Otherwise return null.
      *
      * @param accessToken
      * @param fileId
@@ -175,9 +170,8 @@ public class LOOLServiceImpl implements LOOLService {
     }
 
     /**
-     * Check the access token given in the request and return the nodeRef
-     * corresponding to the file id passed to the request.
-     *
+     * Check the access token given in the request and return the nodeRef corresponding to the file id passed to the
+     * request.
      * Additionally, set the runAs user to the user corresponding to the token.
      *
      * @param req
@@ -273,7 +267,8 @@ public class LOOLServiceImpl implements LOOLService {
         //We should actually never throw an exception here unless of course.......
         if (wopiDiscoveryURL == null) {
             try {
-                wopiDiscoveryURL = new URL(wopiBaseURL.getProtocol() + wopiBaseURL.getHost() + wopiBaseURL.getPort() + "/discovery");
+                wopiDiscoveryURL = new URL(wopiBaseURL.getProtocol() + wopiBaseURL.getHost() + wopiBaseURL.getPort()
+                        + "/discovery");
                 logger.warn("******* Warning *******\nThe wopiDiscoveryURL param wasn't found in " +
                         "alfresco-global.properties. \nWe will assume that the discovery.xml file is hosted on this" +
                         "server and construct a url path based on this: "+ wopiDiscoveryURL.toString() );
@@ -296,19 +291,18 @@ public class LOOLServiceImpl implements LOOLService {
         }
 
         /**
-         * Return the srcurl for a given mimetype.
+         * Return the src url for a given mimetype.
          *
          * @param mimeType
          * @return
          */
         public String getSrcURL(String mimeType, String action) throws IOException {
-            // Attempt to reload discovery.xml from host if it isn't already
-            // loaded.
+            // Attempt to reload discovery.xml from host if it isn't already loaded.
             if (discoveryDoc == null) {
                 try {
                     loadDiscoveryXML();
                 } catch (IOException e) {
-                    logger.error("Failed to fetch discovery.xml file from server ("+ wopiDiscoveryURL.toString()+")", e);
+                    logger.error("Failed to get discovery.xml file from server ("+ wopiDiscoveryURL.toString()+")", e);
                     throw e;
                 }
             }
@@ -351,7 +345,8 @@ public class LOOLServiceImpl implements LOOLService {
 
         private InputStream fetchDiscoveryXML() throws IOException {
             HttpURLConnection connection = (HttpURLConnection) this.wopiDiscoveryURL.openConnection();
-            logger.debug("\n--- debug ---\nHttp connection for discovery xml returned with a [" + connection.getResponseCode() + "] response code.\n");
+            logger.debug("\n--- debug ---\nHttp connection for discovery xml returned with a ["
+                    + connection.getResponseCode() + "] response code.\n");
             try {
                 byte[] conn = IOUtils.toByteArray(connection.getInputStream());
                 return new ByteArrayInputStream(conn);
