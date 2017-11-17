@@ -48,4 +48,10 @@
 		  parent="webscript">
 		<property name="loolServiceUrl" value="${lool.wopi.alfresco.host}"/>
 	</bean>
+
+	<!--WOPI session stuff-->
+	<bean id="webscript.dk.magenta.wopi.session.lock.delete" class="dk.magenta.libreoffice.online.WOPISessionLockRemover"
+        parent="webscript">
+        <property name="nodeService" ref="NodeService"/>
+    </bean>
 </beans>
