@@ -69,6 +69,8 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
             String dte = DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC)
                          .format(Instant.ofEpochMilli(lastModifiedDate.getTime()));
             //TODO Some properties are hard coded for now but we should look into making them sysadmin configurable
+            // Check reference.txt under the wsd directory for some of these properties. For the others look at the WOPI
+            // Standard documentation: https://msdn.microsoft.com/en-us/library/hh622920(v=office.12).aspx
             model.put("BaseFileName", getBaseFileName(nodeRef));
             //We need to enable this if we want to be able to insert image into the documents
             model.put("DisableCopy", false);
@@ -83,10 +85,13 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
             model.put("UserId", AuthenticationUtil.getRunAsUser());
             model.put("UserCanWrite", true);
             model.put("UserExtraInfo", "");
+            model.put("UserCanNotWriteRelative", true);
             model.put("UserFriendlyName", AuthenticationUtil.getRunAsUser());
             model.put("Version",  getDocumentVersion(nodeRef));
-            //Host from which token generation request originated
-            model.put("PostMessageOrigin", loolService.getAlfExternalHost().toString());
+            //Required by the specification if Iframe host withes to interact with the LOLeaflet frame.
+            // Explained here - https://github.com/LibreOffice/online/blob/master/loleaflet/reference.html#L2740
+            // See also - https://wopi.readthedocs.io/en/latest/scenarios/customization.html#term-postmessageorigin
+            model.put("PostMessageOrigin", loolService.getWOPIHost().toString());
             //Search https://www.collaboraoffice.com/category/community-en/ for EnableOwnerTermination
             // last found here: https://www.collaboraoffice.com/community-en/code-2-0-updates-2/
             model.put("EnableOwnerTermination",  false);
@@ -157,6 +162,16 @@ public class LOOLCheckFileInfoWebScript extends DeclarativeWebScript {
             versionService.ensureVersioningEnabled(nodeRef, initialVersionProps);
         }
         return nodeService.getProperty(nodeRef, ContentModel.PROP_VERSION_LABEL).toString();
+    }
+
+    /**
+     * Get's the avatar URL
+     * @param NodeOrUsernameString a nodeRef or String containing the username.
+     * @return URL of the avatar or an empty string.
+     */
+    public String getAvatarURL(Object NodeOrUsernameString){
+        //TODO To be implemented
+        return "";
     }
 
     //<editor-fold desc="Bean setters">

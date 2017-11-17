@@ -23,7 +23,7 @@ import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.transaction.RetryingTransactionHelper;
 import org.alfresco.service.cmr.repository.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.webscripts.*;
@@ -53,7 +53,7 @@ public class LOOLPutFileWebScript extends AbstractWebScript {
             //Verifying that the user actually exists
             PersonInfo person = wopiTokenService.getUserInfoOfToken(tokenInfo);
             final NodeRef nodeRef = wopiTokenService.getFileNodeRef(tokenInfo);
-            if (StringUtils.isBlank(person.getUserName()) && person.getUserName() != tokenInfo.getUserName())
+            if (StringUtils.isBlank(person.getUserName()) && !person.getUserName().equals(tokenInfo.getUserName()) )
                 throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR,
                         "The user no longer appears to exist.");
 
