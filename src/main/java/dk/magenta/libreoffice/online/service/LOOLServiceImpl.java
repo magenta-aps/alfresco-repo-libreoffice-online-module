@@ -247,6 +247,16 @@ public class LOOLServiceImpl implements LOOLService {
 		return alfExternalHost;
 	}
 
+    /**
+     * Returns the URL for the LOOL server
+     *
+     * @return URL for LibreOffice Online equivalent to lool.wopi.url
+     */
+    @Override
+    public URL getWOPIHost() {
+        return wopiBaseURL;
+    }
+
     public void setSysAdminParams(SysAdminParams sysAdminParams) {
         this.sysAdminParams = sysAdminParams;
     }

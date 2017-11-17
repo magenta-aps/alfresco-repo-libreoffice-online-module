@@ -89,4 +89,10 @@ public interface LOOLService {
      * @return
      */
 	URL getAlfExternalHost();
+
+    /**
+     * Returns the URL for the LOOL server
+     * @return URL for LibreOffice Online equivalent to lool.wopi.url
+     */
+	URL getWOPIHost();
 }
