@@ -4,6 +4,6 @@
     <url>/wopi/session/{fileId}</url>
     <family>LibreOffice Online</family>
     <authentication>none</authentication>
-    <format default=""></format>
+    <format default="json"></format>
     <transaction>required</transaction>
 </webscript>

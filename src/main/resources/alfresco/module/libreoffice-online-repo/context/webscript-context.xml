@@ -52,6 +52,6 @@
 	<!--WOPI session stuff-->
 	<bean id="webscript.dk.magenta.wopi.session.lock.delete" class="dk.magenta.libreoffice.online.WOPISessionLockRemover"
         parent="webscript">
-        <property name="nodeService" ref="NodeService"/>
+        <property name="nodeService" ref="nodeService"/>
     </bean>
 </beans>
