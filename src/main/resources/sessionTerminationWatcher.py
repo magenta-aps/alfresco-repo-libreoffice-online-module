@@ -26,9 +26,9 @@ import subprocess
 import requests
 
 
-document_host_url = 'https://alfedu.magenta.dk/alfresco/service/wopi/session/'
-log_file_path = '/var/log/lool/loolwsd.log'
-script_log_file_path = '/var/log/lool/pymon.log'
+document_host_url = 'https://document-server-url/wopi/session/'
+log_file_path = '/path/to/lool/logfile.log'
+script_log_file_path = '/path/to/script/logfile.log'
 f = subprocess.Popen(['tail', '-F', log_file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 ######################################## Logger config ########################################
@@ -46,7 +46,7 @@ while True:
 	pattern = re.search("destroyed with 0 sessions left.", log_line)
 	if pattern is not None:
 		logger.info('\nFound and processing line' + log_line + '\n')
-		print('\nFound and processing line' + log_line + '\n')
+		# Extract the UUID from the line
 		fileId = re.search('[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', log_line).group()
 		if fileId is None:
 			logger.warning('id is not the right length or not found in line')
