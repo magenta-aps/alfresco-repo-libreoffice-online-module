@@ -1,5 +1,6 @@
 package dk.magenta.libreoffice.online;
 
+import dk.magenta.libreoffice.online.service.CollaborativeLockingService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,7 @@ public class WOPISessionLockRemover extends DeclarativeWebScript {
     private static final Logger logger = LoggerFactory.getLogger(WOPISessionLockRemover.class);
 
     private NodeService nodeService;
+    private CollaborativeLockingService collaborativeLockingService;
 
     public void setNodeService(NodeService nodeService) {
         this.nodeService = nodeService;
@@ -30,15 +32,20 @@ public class WOPISessionLockRemover extends DeclarativeWebScript {
         }
         NodeRef docNode = new NodeRef("workspace", "SpacesStore", fileId);
         if(!nodeService.exists(docNode)){
-            throw new WebScriptException(Status.STATUS_NOT_FOUND, "No file exists with given File Id");
+            throw new WebScriptException(Status.STATUS_NOT_FOUND, "No session exists for the given Id: "+ fileId);
         }
-        logger.info("\n~Received request to remove session for document: "+docNode.toString()+"\n");
+        logger.info("\nReceived request to remove session for document: "+docNode.toString()+"\n");
 
-        //TODO: implement Lock mechanism checks and remover.
+        Boolean result = this.collaborativeLockingService.removeCollaborativeLock(docNode);
 
-        model.put("status", "success");
-        model.put("message", "Lock removed for session: "+fileId);
-
+        model.put("status", result);
+        switch (result.toString()) {
+            case "true":
+                model.put("message", "Lock removed for session: " + fileId);
+            case "false":
+                model.put("message", "Lock not removed for session: " + fileId +
+                        ".\nContact your administrator or check server logs for cause.");
+        }
         return model;
     }
 
