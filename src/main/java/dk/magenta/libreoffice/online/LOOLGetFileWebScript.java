@@ -16,12 +16,12 @@ limitations under the License.
 */
 package dk.magenta.libreoffice.online;
 
-import dk.magenta.libreoffice.online.service.LOOLService;
-import dk.magenta.libreoffice.online.service.LOOLServiceImpl;
+import dk.magenta.libreoffice.online.service.*;
 import org.alfresco.model.ContentModel;
 import org.alfresco.service.cmr.repository.*;
 import org.apache.chemistry.opencmis.commons.impl.IOUtils;
 import org.springframework.extensions.webscripts.AbstractWebScript;
+import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 
@@ -29,10 +29,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * @author syastrov.
+ * @modified by DarkStar1
+ */
 public class LOOLGetFileWebScript extends AbstractWebScript {
     private LOOLService loolService;
     private NodeService nodeService;
     private ContentService contentService;
+    private CollaborativeLockingService collaborativeLockingService;
+    private WOPITokenService wopiTokenService;
 
     @Override
     public void execute(WebScriptRequest req, WebScriptResponse res) throws IOException {
@@ -46,6 +52,10 @@ public class LOOLGetFileWebScript extends AbstractWebScript {
         InputStream inputStream = null;
         OutputStream outputStream = null;
         try {
+            WOPIAccessTokenInfo tokenInfo = wopiTokenService.getTokenInfo(req);
+            if(!this.collaborativeLockingService.applyCollaborativeLock(nodeRef, tokenInfo.getUserName())) {
+                throw new WebScriptException("Unable to apply collaborative lock to document check server logs or error");
+            }
             inputStream = reader.getContentInputStream();
             outputStream = res.getOutputStream();
             IOUtils.copy(inputStream, outputStream);
@@ -70,5 +80,13 @@ public class LOOLGetFileWebScript extends AbstractWebScript {
 
     public void setContentService(ContentService contentService) {
         this.contentService = contentService;
+    }
+
+    public void setCollaborativeLockingService(CollaborativeLockingService collaborativeLockingService) {
+        this.collaborativeLockingService = collaborativeLockingService;
+    }
+
+    public void setWopiTokenService(WOPITokenService wopiTokenService) {
+        this.wopiTokenService = wopiTokenService;
     }
 }

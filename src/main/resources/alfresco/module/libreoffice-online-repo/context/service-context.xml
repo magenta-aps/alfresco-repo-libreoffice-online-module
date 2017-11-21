@@ -29,6 +29,11 @@
         <property name="sysAdminParams" ref="sysAdminParams"/>
     </bean>
 
+    <bean id="CollaborativeLockService" class="dk.magenta.libreoffice.online.service.CollaborativeLockingServiceImpl">
+        <property name="nodeService" ref="nodeService"/>
+        <property name="lockService" ref="lockService"/>
+    </bean>
+
     <!--A simple service for dealing with token-->
     <bean id="LOOLWPOITokenService" class="dk.magenta.libreoffice.online.service.WOPITokenServiceImpl">
         <property name="nodeService" ref="nodeService"/>

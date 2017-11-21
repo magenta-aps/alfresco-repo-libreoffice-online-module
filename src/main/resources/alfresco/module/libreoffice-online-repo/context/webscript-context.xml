@@ -34,6 +34,8 @@
 		<property name="loolService" ref="LOOLService"/>
 		<property name="nodeService" ref="NodeService"/>
 		<property name="contentService" ref="ContentService"/>
+		<property name="wopiTokenService" ref="LOOLWPOITokenService"/>
+		<property name="collaborativeLockingService" ref="CollaborativeLockService"/>
 	</bean>
 
 	<bean id="webscript.dk.magenta.wopi.file.post" class="dk.magenta.libreoffice.online.LOOLPutFileWebScript"
