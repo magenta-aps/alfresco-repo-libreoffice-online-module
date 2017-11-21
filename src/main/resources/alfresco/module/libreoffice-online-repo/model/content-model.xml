@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<model name="myc:contentModel" xmlns="http://www.alfresco.org/model/dictionary/1.0">
+<model name="mca:contentModel" xmlns="http://www.alfresco.org/model/dictionary/1.0">
 
     <!-- Optional meta-data about the model -->
-    <description>Document Model for Repo Extension X</description>
-    <author>My Name</author>
+    <description>Document Model for Collaborative lock</description>
+    <author>DarkStar1</author>
     <version>1.0</version>
 
     <imports>
@@ -17,11 +17,16 @@
 
     <!-- Custom namespace for your domain -->
     <namespaces>
-        <namespace uri="http://www.mycompany.com/model/content/1.0" prefix="myc"/>
+        <namespace uri="http://magenta.dk/model/collaborative_edit/1.0" prefix="mca"/>
     </namespaces>
 
-    <!-- ===============================================================================================================
-        Constraints, Types, and Aspects go here...
-        -->
+    <!-- ============================== Constraints, Types, and Aspects go here ============================== -->
+    <aspects>
+        <aspect name="mca:lockable">
+            <title>Collaborative Lock</title>
+            <!--No need for properties at the moment-->
+            <properties/>
+        </aspect>
+    </aspects>
 
 </model>
