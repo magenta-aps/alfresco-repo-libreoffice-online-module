@@ -53,8 +53,10 @@ public class LOOLGetFileWebScript extends AbstractWebScript {
         OutputStream outputStream = null;
         try {
             WOPIAccessTokenInfo tokenInfo = wopiTokenService.getTokenInfo(req);
-            if(!this.collaborativeLockingService.applyCollaborativeLock(nodeRef, tokenInfo.getUserName())) {
-                throw new WebScriptException("Unable to apply collaborative lock to document check server logs or error");
+            if(!this.collaborativeLockingService.isLocked(nodeRef)) {
+                if (!this.collaborativeLockingService.applyCollaborativeLock(nodeRef, tokenInfo.getUserName())) {
+                    throw new WebScriptException("Unable to apply collaborative lock to document check server logs or error");
+                }
             }
             inputStream = reader.getContentInputStream();
             outputStream = res.getOutputStream();

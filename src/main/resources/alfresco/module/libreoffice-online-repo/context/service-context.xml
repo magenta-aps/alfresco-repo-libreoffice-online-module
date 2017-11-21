@@ -41,4 +41,57 @@
         <property name="loolService" ref="LOOLService" />
     </bean>
 
+    <bean id="lool.lockService" class="dk.magenta.alfresco.extensions.LockingServiceImpl" init-method="init" parent="lockService">
+        <property name="collaborativeLockingService" ref="CollaborativeLockService"/>
+    </bean>
+
+    <bean id="LockService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>org.alfresco.service.cmr.lock.LockService</value>
+        </property>
+        <property name="target">
+            <ref bean="lool.lockService"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref local="LockService_transaction"/>
+                <idref local="AuditMethodInterceptor"/>
+                <idref local="exceptionTranslator"/>
+                <idref bean="LockService_security"/>
+                <idref bean="lockServiceDisableAuditablePolicyInterceptor"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Next three are copied here because of the above bean -->
+    <!-- AuditMethodInterceptor -->
+    <bean id="AuditMethodInterceptor" class="org.alfresco.repo.audit.AuditMethodInterceptor">
+        <property name="beanIdentifier">
+            <ref bean="beanIdentifier"/>
+        </property>
+        <property name="auditComponent">
+            <ref bean="auditComponent"/>
+        </property>
+        <property name="transactionService">
+            <ref bean="transactionService"/>
+        </property>
+        <property name="threadPoolExecutor">
+            <ref bean="auditThreadPool"/>
+        </property>
+    </bean>
+
+    <!-- Exception Translation -->
+    <bean id="exceptionTranslator" class="org.alfresco.repo.security.permissions.impl.ExceptionTranslatorMethodInterceptor"/>
+
+    <bean id="LockService_transaction" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">${server.transaction.mode.default}</prop>
+            </props>
+        </property>
+    </bean>
+
 </beans>
