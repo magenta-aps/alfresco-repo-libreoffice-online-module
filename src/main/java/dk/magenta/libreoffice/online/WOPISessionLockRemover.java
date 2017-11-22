@@ -46,9 +46,11 @@ public class WOPISessionLockRemover extends DeclarativeWebScript {
         switch (Boolean.toString(result) ){
             case "true":
                 model.put("message", "Lock removed for session: " + fileId);
+                break;
             case "false":
                 model.put("message", "Lock not removed for session: " + fileId +
                         ".\nContact your administrator or check server logs for cause.");
+                break;
         }
         return model;
     }

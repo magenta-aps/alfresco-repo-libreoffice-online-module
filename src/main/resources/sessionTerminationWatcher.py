@@ -43,7 +43,7 @@ logger = logging.getLogger('__name__')
 
 while True:
 	log_line = f.stdout.readline().decode().strip()
-	pattern = re.search("destroyed with 0 sessions left.", log_line)
+	pattern = re.search("Have 1 sessions. markToDestroy: true, LastEditableSession: true.", log_line)
 	if pattern is not None:
 		logger.info('\nFound and processing line' + log_line + '\n')
 		# Extract the UUID from the line
