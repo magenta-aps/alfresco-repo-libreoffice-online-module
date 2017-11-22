@@ -40,10 +40,10 @@ public class WOPISessionLockRemover extends DeclarativeWebScript {
         }
         logger.info("\nReceived request to remove session for document: "+docNode.toString()+"\n");
 
-        Boolean result = this.collaborativeLockingService.removeCollaborativeLock(docNode);
+        boolean result = this.collaborativeLockingService.removeCollaborativeLock(docNode);
 
-        model.put("status", result);
-        switch (result.toString()) {
+        model.put("removed", result);
+        switch (Boolean.toString(result) ){
             case "true":
                 model.put("message", "Lock removed for session: " + fileId);
             case "false":

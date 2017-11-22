@@ -1,4 +1,4 @@
 {
-    "status":"${status?js_string}",
+    "removed":"${removed?c}",
     "message":"${message?js_string}"
 }
