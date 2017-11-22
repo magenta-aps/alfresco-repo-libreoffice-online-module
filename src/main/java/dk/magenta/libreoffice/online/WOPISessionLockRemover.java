@@ -24,6 +24,10 @@ public class WOPISessionLockRemover extends DeclarativeWebScript {
         this.nodeService = nodeService;
     }
 
+    public void setCollaborativeLockingService(CollaborativeLockingService collaborativeLockingService) {
+        this.collaborativeLockingService = collaborativeLockingService;
+    }
+
     protected Map<String, Object> executeImpl(WebScriptRequest req, Status status, Cache cache) {
         Map<String, Object> model = new HashMap<>();
         String fileId = req.getServiceMatch().getTemplateVars().get("fileId");

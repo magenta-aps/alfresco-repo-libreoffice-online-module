@@ -55,5 +55,6 @@
 	<bean id="webscript.dk.magenta.wopi.session.lock.delete" class="dk.magenta.libreoffice.online.WOPISessionLockRemover"
         parent="webscript">
         <property name="nodeService" ref="nodeService"/>
+		<property name="collaborativeLockingService" ref="CollaborativeLockService"/>
     </bean>
 </beans>
