@@ -30,10 +30,9 @@ public class LockingServiceImpl extends LockServiceImpl {
 
     @Override
     public void init() {
-        super.init();
         PropertyCheck.mandatory(this, "collaborativeLockingService", collaborativeLockingService);
+        super.init();
     }
-
 
     @Override
     @Extend(traitAPI = LockServiceTrait.class, extensionAPI = LockServiceExtension.class)
@@ -59,6 +58,15 @@ public class LockingServiceImpl extends LockServiceImpl {
     }
 
     @Override
+    @Extend(traitAPI = LockServiceTrait.class, extensionAPI = LockServiceExtension.class)
+    public boolean isLockedAndReadOnly(NodeRef nodeRef) {
+        if (collaborativeLockingService.isLocked(nodeRef))
+            return false;
+        else
+            return super.isLockedAndReadOnly(nodeRef);
+    }
+
+    @Override
     public void beforeUpdateNode(NodeRef nodeRef) {
         //Check if the document is collaboratively locked before the running the normal checks
         if (!collaborativeLockingService.isLocked(nodeRef))
@@ -67,12 +75,10 @@ public class LockingServiceImpl extends LockServiceImpl {
 
     @Override
     public void beforeDeleteNode(NodeRef nodeRef) {
-        if (collaborativeLockingService.isLocked(nodeRef) ){
+        if (collaborativeLockingService.isLocked(nodeRef)) {
             throw new NodeLockedException(nodeRef, "Cannot delete document whilst it is being collaboratively edited.");
-        }
-        else
+        } else
             super.beforeDeleteNode(nodeRef);
     }
-
 
 }
