@@ -1,0 +1,3 @@
+{
+    "isLocked":"${isLocked?c}",
+}

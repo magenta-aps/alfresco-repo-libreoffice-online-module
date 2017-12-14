@@ -1,0 +1,9 @@
+<webscript>
+    <shortname>WOPI Session lock checker</shortname>
+    <description>Checks for a collaborative lock on a file</description>
+    <url>/wopi/session/{fileId}</url>
+    <family>LibreOffice Online</family>
+    <authentication>none</authentication>
+    <format default="json"></format>
+    <transaction>required</transaction>
+</webscript>

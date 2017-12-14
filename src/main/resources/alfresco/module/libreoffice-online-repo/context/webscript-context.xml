@@ -57,4 +57,10 @@
         <property name="nodeService" ref="nodeService"/>
 		<property name="collaborativeLockingService" ref="CollaborativeLockService"/>
     </bean>
+
+	<bean id="webscript.dk.magenta.wopi.session.lock.get" class="dk.magenta.libreoffice.online.WOPISessionLockChecker"
+		  parent="webscript">
+		<property name="nodeService" ref="nodeService"/>
+		<property name="collaborativeLockingService" ref="CollaborativeLockService"/>
+	</bean>
 </beans>
