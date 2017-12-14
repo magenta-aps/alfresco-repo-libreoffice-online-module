@@ -42,7 +42,7 @@
         <property name="loolService" ref="LOOLService" />
     </bean>
 
-    <bean id="lool.lockServiceExtension" class="dk.magenta.alfresco.extensions.CollaborativeLockServiceExtension">
+    <bean id="lockServiceExtension" class="dk.magenta.alfresco.extensions.CollaborativeLockServiceExtension">
         <property name="collaborativeLockingService" ref="CollaborativeLockService" />
         <property name="extensionPoint" ref="lockServiceExtensionPoint" />
     </bean>
@@ -50,7 +50,7 @@
     <bean id="lool.lockService" class="dk.magenta.alfresco.extensions.LockingServiceImpl" init-method="init" parent="lockService">
         <property name="collaborativeLockingService" ref="CollaborativeLockService"/>
     </bean>
-    
+
     <bean id="LockService" class="org.springframework.aop.framework.ProxyFactoryBean">
         <property name="proxyInterfaces">
             <value>org.alfresco.service.cmr.lock.LockService</value>
