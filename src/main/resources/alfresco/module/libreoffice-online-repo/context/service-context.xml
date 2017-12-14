@@ -42,11 +42,13 @@
         <property name="loolService" ref="LOOLService" />
     </bean>
 
+<!--
     <bean id="lockServiceExtension" class="dk.magenta.alfresco.extensions.CollaborativeLockServiceExtension">
         <property name="collaborativeLockingService" ref="CollaborativeLockService" />
         <property name="extensionPoint" ref="lockServiceExtensionPoint" />
     </bean>
-<!--
+    -->
+
     <bean id="lool.lockService" class="dk.magenta.alfresco.extensions.LockingServiceImpl" init-method="init" parent="lockService">
         <property name="collaborativeLockingService" ref="CollaborativeLockService"/>
     </bean>
@@ -69,8 +71,8 @@
         </property>
     </bean>
 
-    &lt;!&ndash; Next three are copied here because of the above bean &ndash;&gt;
-    &lt;!&ndash; AuditMethodInterceptor &ndash;&gt;
+    <!-- Next three are copied here because of the above bean -->
+    <!-- AuditMethodInterceptor -->
     <bean id="AuditMethodInterceptor" class="org.alfresco.repo.audit.AuditMethodInterceptor">
         <property name="beanIdentifier">
             <ref bean="beanIdentifier"/>
@@ -86,7 +88,7 @@
         </property>
     </bean>
 
-    &lt;!&ndash; Exception Translation &ndash;&gt;
+    <!-- Exception Translation -->
     <bean id="exceptionTranslator" class="org.alfresco.repo.security.permissions.impl.ExceptionTranslatorMethodInterceptor"/>
 
     <bean id="LockService_transaction" class="org.springframework.transaction.interceptor.TransactionInterceptor">
@@ -99,6 +101,5 @@
             </props>
         </property>
     </bean>
--->
 
 </beans>
