@@ -16,6 +16,7 @@ limitations under the License.
 */
 package dk.magenta.libreoffice.online;
 
+import dk.magenta.libreoffice.online.service.CollaborativeLockingService;
 import dk.magenta.libreoffice.online.service.LOOLService;
 import dk.magenta.libreoffice.online.service.WOPIAccessTokenInfo;
 import org.alfresco.service.cmr.repository.NodeRef;
@@ -27,6 +28,7 @@ import java.util.Map;
 
 public class LOOLGetTokenWebScript extends DeclarativeWebScript {
     private LOOLService loolService;
+    private CollaborativeLockingService collaborativeLockingService;
 
     protected Map<String, Object> executeImpl(
             WebScriptRequest req, Status status, Cache cache) {
@@ -52,10 +54,21 @@ public class LOOLGetTokenWebScript extends DeclarativeWebScript {
         model.put("access_token", tokenInfo.getAccessToken());
         model.put("access_token_ttl", tokenInfo.getExpiresAt().getTime());
         model.put("wopi_src_url", wopiSrcUrl);
+
+        if(action.equalsIgnoreCase("edit"))
+            if(!this.collaborativeLockingService.isLocked(nodeRef)) {
+                if (!this.collaborativeLockingService.applyCollaborativeLock(nodeRef, tokenInfo.getUserName())) {
+                    throw new WebScriptException("Unable to apply collaborative lock to document check server logs or error");
+                }
+            }
         return model;
     }
 
     public void setLoolService(LOOLService loolService) {
         this.loolService = loolService;
+    }
+
+    public void setCollaborativeLockingService(CollaborativeLockingService collaborativeLockingService) {
+        this.collaborativeLockingService = collaborativeLockingService;
     }
 }
