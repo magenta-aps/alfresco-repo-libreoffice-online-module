@@ -40,6 +40,9 @@ logging.basicConfig(level=logging.INFO, filename=script_log_file_path, filemode=
 logger = logging.getLogger('__name__')
 
 ################################################################################################
+print('\n================== LibreOffice Online Session Termination Script ==================')
+print('Starting script for monitoring LOST....')
+
 
 while True:
 	log_line = f.stdout.readline().decode().strip()
