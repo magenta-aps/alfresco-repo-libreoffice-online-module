@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>dk.magenta</groupId>
     <artifactId>libreoffice-online-repo</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1.02</version>
     <name>libreoffice-online-repo Repository AMP project</name>
     <packaging>jar</packaging>
     <description>Manages the lifecycle of the libreoffice-online-repo Repository AMP (Alfresco Module Package)
